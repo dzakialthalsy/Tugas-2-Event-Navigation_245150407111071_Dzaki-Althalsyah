@@ -7,115 +7,257 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'E-Commerce Simple',
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      home: const HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+// --- MODEL DATA ---
+class Product {
+  final String name;
+  final String description;
+  final String price;
+  final String category;
+  final String imageUrl;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  Product(
+    this.name,
+    this.description,
+    this.price,
+    this.category,
+    this.imageUrl,
+  );
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+// --- 1. HALAMAN HOME ---
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  // Data Dummy Hardcoded
+  final List<Product> products = const [
+    /* Menggunakan placeholder image karena data bersifat hardcoded */
+  ];
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    // List produk untuk ditampilkan
+    final List<Product> dummyProducts = [
+      Product(
+        "Sepatu Running A1",
+        "Sepatu lari ringan dan nyaman.",
+        "Rp 750.000",
+        "Fashion",
+        "https://picsum.photos/200",
+      ),
+      Product(
+        "Laptop Pro 14",
+        "Laptop kencang untuk produktivitas.",
+        "Rp 15.000.000",
+        "Elektronik",
+        "https://picsum.photos/201",
+      ),
+      Product(
+        "Jam Tangan Digital",
+        "Tahan air hingga 50 meter.",
+        "Rp 300.000",
+        "Aksesoris",
+        "https://picsum.photos/202",
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text("Toko Sederhana"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              // Navigasi ke halaman Profile
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            },
+          ),
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: ListView.builder(
+        itemCount: dummyProducts.length,
+        itemBuilder: (context, index) {
+          final item = dummyProducts[index];
+          return Card(
+            margin: const EdgeInsets.all(8),
+            child: ListTile(
+              leading: Image.network(
+                item.imageUrl,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              ),
+              title: Text(item.name),
+              subtitle: Text(item.category),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                // Event Handling: Tap untuk Navigasi & Kirim Data
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailPage(product: item),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// --- 2. HALAMAN DETAIL ---
+class DetailPage extends StatefulWidget {
+  final Product product;
+  const DetailPage({super.key, required this.product});
+
+  @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  bool isLiked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Detail Produk")),
+      body: SingleChildScrollView(
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Image.network(
+              widget.product.imageUrl,
+              width: double.infinity,
+              height: 250,
+              fit: BoxFit.cover,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.product.name,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          // Event Handling: Tombol Like menggunakan setState
+                          setState(() {
+                            isLiked = !isLiked;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Text(
+                    widget.product.category,
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.product.price,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Deskripsi:",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(widget.product.description),
+                ],
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+}
+
+// --- 3. HALAMAN PROFILE ---
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Profil Saya")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.blue,
+                child: Icon(Icons.person, size: 50, color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const ListTile(
+              leading: Icon(Icons.email),
+              title: Text("Email"),
+              subtitle: Text("dzaki.althalsyah@example.com"),
+            ),
+            const ListTile(
+              leading: Icon(Icons.location_on),
+              title: Text("Alamat"),
+              subtitle: Text("Jl. Universitas Brawijaya, Malang"),
+            ),
+            const ListTile(
+              leading: Icon(Icons.phone),
+              title: Text("No HP"),
+              subtitle: Text("08123456789"),
+            ),
+            const ListTile(
+              leading: Icon(Icons.cake),
+              title: Text("Tanggal Lahir"),
+              subtitle: Text("1 Januari 2000"),
+            ),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Event Handling: Tombol Edit (Feedback Sederhana)
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Fitur edit diklik")),
+                  );
+                },
+                child: const Text("Edit Profil"),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
