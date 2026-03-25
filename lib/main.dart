@@ -283,7 +283,7 @@ class ProfilePage extends StatelessWidget {
             const ListTile(
               leading: Icon(Icons.email),
               title: Text("Email"),
-              subtitle: Text("dzaki.althalsyah@example.com"),
+              subtitle: Text("dz4ic7@gmail.com"),
             ),
             const ListTile(
               leading: Icon(Icons.location_on),
@@ -298,7 +298,7 @@ class ProfilePage extends StatelessWidget {
             const ListTile(
               leading: Icon(Icons.cake),
               title: Text("Tanggal Lahir"),
-              subtitle: Text("1 Januari 2000"),
+              subtitle: Text("1 Januari 1990"),
             ),
             const Spacer(),
             SizedBox(
