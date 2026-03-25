@@ -10,14 +10,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'E-Commerce Simple',
+      title: 'E-Commerce Elektronik',
       theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       home: const HomePage(),
     );
   }
 }
 
-// --- MODEL DATA ---
+// model data untuk data dummy
 class Product {
   final String name;
   final String description;
@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Data Dummy Hardcoded
+    // Data Dummy Hardcode
     final List<Product> dummyProducts = [
       Product(
         "Sepatu Running A1",
@@ -67,13 +67,13 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Toko Sederhana"),
+        title: const Text("E-Commerce Elektronik"),
         elevation: 2,
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              // Navigasi ke halaman Profile
+              // navigasi ke profile
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ProfilePage()),
@@ -82,7 +82,6 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      // Card Utama yang membungkus list
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Card(
@@ -92,16 +91,12 @@ class HomePage extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            // Menggunakan GridView agar tampilan kotak lebih menyatu,
-            // atau tetap ListView tapi dengan desain item custom.
-            // Di sini kita gunakan ListView dengan design item custom (Column).
             child: ListView.builder(
               itemCount: dummyProducts.length,
               itemBuilder: (context, index) {
                 final item = dummyProducts[index];
                 return GestureDetector(
                   onTap: () {
-                    // Event Handling: Tap untuk Navigasi & Kirim Data
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -109,16 +104,14 @@ class HomePage extends StatelessWidget {
                       ),
                     );
                   },
-                  // --- PERUBAHAN: Design Item Custom (Bukan ListTile) ---
                   child: Card(
-                    elevation: 0, // Flat di dalam card utama
+                    elevation: 0,
                     margin: const EdgeInsets.symmetric(vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // --- 1. Gambar Kotak Besar ---
                         AspectRatio(
-                          aspectRatio: 1 / 1, // Memaksa bentuk kotak sempurna
+                          aspectRatio: 1 / 1,
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: const BorderRadius.vertical(
@@ -126,12 +119,11 @@ class HomePage extends StatelessWidget {
                               ),
                               image: DecorationImage(
                                 image: NetworkImage(item.imageUrl),
-                                fit: BoxFit.cover, // Gambar memenuhi kotak
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
                         ),
-                        // --- 2. Detail Teks di Bawah Gambar ---
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Column(
@@ -231,7 +223,7 @@ class _DetailPageState extends State<DetailPage> {
                           color: Colors.red,
                         ),
                         onPressed: () {
-                          // Event Handling: Tombol Like menggunakan setState
+                          // event handling dengan menggunakan setstate
                           setState(() {
                             isLiked = !isLiked;
                           });
@@ -313,7 +305,7 @@ class ProfilePage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Event Handling: Tombol Edit (Feedback Sederhana)
+                  // event handling tombol edit
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Fitur edit diklik")),
                   );
