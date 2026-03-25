@@ -34,45 +34,41 @@ class Product {
   );
 }
 
-// --- 1. HALAMAN HOME ---
+// halaman home
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  // Data Dummy Hardcoded
-  final List<Product> products = const [
-    /* Menggunakan placeholder image karena data bersifat hardcoded */
-  ];
-
   @override
   Widget build(BuildContext context) {
-    // List produk untuk ditampilkan
+    // Data Dummy Hardcoded
     final List<Product> dummyProducts = [
       Product(
         "Sepatu Running A1",
         "Sepatu lari ringan dan nyaman.",
         "Rp 750.000",
         "Fashion",
-        "https://picsum.photos/200",
+        "https://picsum.photos/500?image=10",
       ),
       Product(
         "Laptop Pro 14",
         "Laptop kencang untuk produktivitas.",
         "Rp 15.000.000",
         "Elektronik",
-        "https://picsum.photos/201",
+        "https://picsum.photos/500?image=1",
       ),
       Product(
         "Jam Tangan Digital",
         "Tahan air hingga 50 meter.",
         "Rp 300.000",
         "Aksesoris",
-        "https://picsum.photos/202",
+        "https://picsum.photos/500?image=20",
       ),
     ];
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Toko Sederhana"),
+        elevation: 2,
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
@@ -86,40 +82,106 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: dummyProducts.length,
-        itemBuilder: (context, index) {
-          final item = dummyProducts[index];
-          return Card(
-            margin: const EdgeInsets.all(8),
-            child: ListTile(
-              leading: Image.network(
-                item.imageUrl,
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
-              ),
-              title: Text(item.name),
-              subtitle: Text(item.category),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                // Event Handling: Tap untuk Navigasi & Kirim Data
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailPage(product: item),
+      // Card Utama yang membungkus list
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            // Menggunakan GridView agar tampilan kotak lebih menyatu,
+            // atau tetap ListView tapi dengan desain item custom.
+            // Di sini kita gunakan ListView dengan design item custom (Column).
+            child: ListView.builder(
+              itemCount: dummyProducts.length,
+              itemBuilder: (context, index) {
+                final item = dummyProducts[index];
+                return GestureDetector(
+                  onTap: () {
+                    // Event Handling: Tap untuk Navigasi & Kirim Data
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailPage(product: item),
+                      ),
+                    );
+                  },
+                  // --- PERUBAHAN: Design Item Custom (Bukan ListTile) ---
+                  child: Card(
+                    elevation: 0, // Flat di dalam card utama
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // --- 1. Gambar Kotak Besar ---
+                        AspectRatio(
+                          aspectRatio: 1 / 1, // Memaksa bentuk kotak sempurna
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(10),
+                              ),
+                              image: DecorationImage(
+                                image: NetworkImage(item.imageUrl),
+                                fit: BoxFit.cover, // Gambar memenuhi kotak
+                              ),
+                            ),
+                          ),
+                        ),
+                        // --- 2. Detail Teks di Bawah Gambar ---
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    item.category,
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  ),
+                                  Text(
+                                    item.price,
+                                    style: const TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 }
 
-// --- 2. HALAMAN DETAIL ---
+// halaman detail produk
 class DetailPage extends StatefulWidget {
   final Product product;
   const DetailPage({super.key, required this.product});
@@ -153,11 +215,14 @@ class _DetailPageState extends State<DetailPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        widget.product.name,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(
+                          widget.product.name,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       IconButton(
@@ -203,7 +268,7 @@ class _DetailPageState extends State<DetailPage> {
   }
 }
 
-// --- 3. HALAMAN PROFILE ---
+// halaman profile
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
