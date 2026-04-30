@@ -305,7 +305,7 @@ class ProfilePage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // event handling tombol edit
+                  // snackbar tombol edit
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Fitur edit diklik")),
                   );
